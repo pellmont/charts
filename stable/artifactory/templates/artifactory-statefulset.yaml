@@ -110,6 +110,7 @@ spec:
           {{ .Values.artifactory.preStartCommand }};
           {{- end }}
           /entrypoint-artifactory.sh
+        {{- if .Values.artifactory.postStartCommand }}
         lifecycle:
           postStart:
             exec:
@@ -117,9 +118,8 @@ spec:
               - '/bin/sh'
               - '-c'
               - >
-                {{- if .Values.artifactory.postStartCommand }}
                 {{ .Values.artifactory.postStartCommand }}
-                {{- end }}
+        {{- end }}
         env:
       {{- if .Values.postgresql.enabled }}
         - name: DB_TYPE
@@ -210,7 +210,7 @@ spec:
           {{- end }}
       {{- end }}
       {{- if .Values.artifactory.replicator.enabled }}
-          -Dartifactory.releasebundle.feature.enabled=true
+            -Dartifactory.releasebundle.feature.enabled=true
       {{- end }}
         {{- if .Values.artifactory.replicator.enabled }}
         - name: START_LOCAL_REPLICATOR
